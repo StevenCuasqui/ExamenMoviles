@@ -3,11 +3,17 @@ package epn.moviles.examenapp
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Klaxon
+import com.beust.klaxon.KlaxonJson
+import com.beust.klaxon.json
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
 import kotlinx.android.synthetic.main.activity_crear_paciente.*
+import kotlinx.android.synthetic.main.activity_main.*
+import org.json.JSONObject
+import java.lang.ref.ReferenceQueue
 
 class CrearPacienteActivity : AppCompatActivity() {
 
@@ -17,15 +23,37 @@ class CrearPacienteActivity : AppCompatActivity() {
 
         button_cancelar_crear_paciente.setOnClickListener { this.finish() }
 
+        button_post_paciente.setOnClickListener {  crearPaciente()}
+
+    }
+
+
+    fun crearPaciente(){
         val url = "http://192.168.100.8:1337/Paciente"
+        val nombres = texto_nombre.text
+        val apellidos = texto_apellido.text
+        val fechaNacimiento = texto_fecha.text
+        var tieneSeguro:Boolean
+        if (checkBox_seguro.isChecked()){
+            tieneSeguro = true
+        }else{
+            tieneSeguro = false
+        }
+
 
         val parametros = listOf(
-            "nombres" to "Steven Andres",
-            "apellidos" to "Cuasqui Ponce",
-            "fechaNacimiento" to "1997-01-22",
-            "tieneSeguro" to false
+            "nombres" to nombres,
+            "apellidos" to apellidos,
+            "fechaNacimiento" to fechaNacimiento,
+            "tieneSeguro" to tieneSeguro
         )
 
+//        val paciente = PacienteHttp("","","",true,null,null,null)
+//        val paciente2 = PacienteHttp("","","",false,null,null,null)
+//        val req = listOf<PacienteHttp>(paciente,paciente2)
+
+        //val req = url.httpPost().httpHeaders["Content-Type"] = "application/json"
+        url.httpPost().headers["Content-Type"] = "application/json"
         url
             .httpPost(parametros)
             .responseString { request, response, result ->
@@ -50,6 +78,15 @@ class CrearPacienteActivity : AppCompatActivity() {
                     }
                 }
             }
+        limpiarCampos()
+    }
+
+    fun limpiarCampos(){
+
+        val nombres = texto_nombre.text.clear()
+        val apellidos = texto_apellido.text.clear()
+        val fechaNacimiento = texto_fecha.text.clear()
+        checkBox_seguro.isChecked =false
 
     }
 
