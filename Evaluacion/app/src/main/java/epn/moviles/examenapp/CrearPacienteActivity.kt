@@ -47,7 +47,7 @@ class CrearPacienteActivity : AppCompatActivity() {
             "fechaNacimiento" to fechaNacimiento,
             "tieneSeguro" to tieneSeguro
         )
-
+            val paciente = Paciente
 //        val paciente = PacienteHttp("","","",true,null,null,null)
 //        val paciente2 = PacienteHttp("","","",false,null,null,null)
 //        val req = listOf<PacienteHttp>(paciente,paciente2)
