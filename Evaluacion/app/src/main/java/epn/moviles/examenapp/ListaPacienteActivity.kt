@@ -7,19 +7,16 @@ import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.RelativeLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.view.*
+import android.widget.ArrayAdapter
+import android.widget.*
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Klaxon
 import com.beust.klaxon.KlaxonJson
 import com.github.kittinunf.fuel.android.core.Json
 import com.github.kittinunf.fuel.android.extension.responseJson
+import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
 import com.github.kittinunf.result.getAs
@@ -76,12 +73,11 @@ class ListaPacienteActivity : AppCompatActivity() {
                 paciente_recyclerView.layoutManager = LinearLayoutManager(this)
                 paciente_recyclerView.itemAnimator = DefaultItemAnimator()
                 paciente_recyclerView.adapter = PacienteAdapter(listGeneral, this,paciente_recyclerView)
+                registerForContextMenu(paciente_recyclerView)
                 PacienteAdapter(listGeneral, this,paciente_recyclerView).notifyDataSetChanged()
                 Log.i("http", "DatosB: ${listGeneral.nombres.size}")
 
             }
-
-
 
 
 
@@ -99,13 +95,15 @@ class ListaPacienteActivity : AppCompatActivity() {
     class PacienteAdapter(private val listaPacientes : listadePacientes,
                           private val contexto: ListaPacienteActivity,
                           private val recyclerView: RecyclerView) : RecyclerView.Adapter<MyViewHolder>() {
-
+        val urlGen = "http://192.168.100.8:1337/Paciente"
         inner class MyViewHolder (view: View) : RecyclerView.ViewHolder(view) {
 
             val PacienteNombreIndividual = view.text_paciente_individual
             val PacienteApellidoIndividual = view.text_paciente_apellido
             val PacienteFechaIndividual = view.text_fechanacimiento
 
+
+            val layoutRef = view.findViewById(R.id.relative_layout) as RelativeLayout
             init{
 
                 val layout = view.findViewById(R.id.relative_layout) as RelativeLayout
@@ -118,7 +116,6 @@ class ListaPacienteActivity : AppCompatActivity() {
                             "El nombre actual es: ${nombreActual.text}")
 
                     }
-
 
             }
 
@@ -145,14 +142,115 @@ class ListaPacienteActivity : AppCompatActivity() {
 
 
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+            val arregloLenght = listaPacientes.nombres[position]
+            val identificador = listadePacientes.ids.get(position)
             holder.PacienteNombreIndividual?.text =listadePacientes.nombres.get(position)
             holder.PacienteApellidoIndividual?.text = listadePacientes.apellidos.get(position)
             holder.PacienteFechaIndividual?.text =listadePacientes.fechas.get(position)
+
+            holder.layoutRef.setOnClickListener {
+                val popUp = PopupMenu(contexto,holder.PacienteNombreIndividual)
+                popUp.inflate(R.menu.option_menu)
+                popUp.setOnMenuItemClickListener {
+                    item -> when (item.itemId){
+                    R.id.item_menu_editar->{
+                        Log.i("Menu","${identificador}")
+
+
+
+                        true
+                    }
+                    R.id.item_menu_eliminar->{
+                        val parametros = listOf("id" to identificador)
+                        urlGen
+                            .httpDelete(parametros)
+                            .responseString { request, response, result ->
+                                when (result) {
+                                    is Result.Failure -> {
+                                        val error = result.getException()
+                                        Log.i("Eliminar", error.toString())
+
+
+                                    }
+                                    is Result.Success -> run {
+                                        val data = result.get()
+                                        Log.i("eliminar", data)
+
+
+                                    }
+                                }
+                            }
+                        true
+                    }
+                    R.id.item_menu_listar_medicamentos->{
+                        true
+                    }
+                    R.id.item_menu_compartir->{
+                        true
+                    }
+                    else -> false
+                }
+                }
+                popUp.show()
+            }
 
         }
 
 
     }
+
+//    fun llenarListView() {
+//        val adapter = ArrayAdapter<String>(
+//            this,
+//            android.R.layout.simple_list_item_1
+//        )
+//
+//        list_view_context_menu.adapter = adapter
+//
+//        // Registrar para que sirvan los menus contextuales
+//
+//        registerForContextMenu(list_view_context_menu)
+//    }
+//
+//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+//        val inflater = menuInflater
+//        inflater.inflate(R.menu.option_menu, menu)
+//        return true
+//    }
+//
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        // Handle item selection
+//        when (item.getItemId()) {
+//            R.id.abrir -> {
+//                Log.i("menu", "Abrir")
+//                return true
+//            }
+//            R.id.nuevo -> {
+//                Log.i("menu", "Nuevo")
+//                return true
+//            }
+//            R.id.editar -> {
+//                Log.i("menu", "Editar")
+//                return true
+//            }
+//            R.id.eliminar -> {
+//                Log.i("menu", "Eliminar")
+//                return true
+//            }
+//            else -> return super.onOptionsItemSelected(item)
+//        }
+//    }
+//
+//    override fun onCreateContextMenu(menu: ContextMenu?,
+//        v: View?,
+//        menuInfo:ContextMenu.ContextMenuInfo?) {
+//        super.onCreateContextMenu(menu, v, menuInfo)
+//
+//        val inflater = menuInflater
+//        inflater.inflate(R.menu.option_menu,menu)
+//
+//
+//    }
 
     companion object listadePacientes{
         val ids = mutableListOf<Int>()

@@ -17,6 +17,10 @@
             android:layout_marginEnd="8dp" app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="8dp" app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintVertical_bias="1.0"/>
+    <ListView
+            android:id="@+id/list_view_context_menu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
 
 </android.support.constraint.ConstraintLayout>
