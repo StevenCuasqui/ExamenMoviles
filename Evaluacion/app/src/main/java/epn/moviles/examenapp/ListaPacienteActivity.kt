@@ -1,8 +1,10 @@
 package epn.moviles.examenapp
 
 import android.content.Context
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.content.ContextCompat.startActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -21,11 +23,13 @@ import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
 import com.github.kittinunf.result.getAs
 import epn.moviles.examenapp.ListaPacienteActivity.PacienteAdapter.MyViewHolder
+import epn.moviles.examenapp.R.id.button_post_paciente
 import epn.moviles.examenapp.R.id.paciente_recyclerView
 import kotlinx.android.synthetic.main.activity_lista_paciente.*
 import kotlinx.android.synthetic.main.paciente_item.*
 import kotlinx.android.synthetic.main.paciente_item.view.*
 import org.json.JSONArray
+import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.reflect.jvm.internal.impl.incremental.components.Position
 
@@ -39,7 +43,16 @@ class ListaPacienteActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lista_paciente)
+        cargarDatos()
 
+
+
+    }
+    fun cargarDatos(){
+        listGeneral.nombres.clear()
+        listGeneral.fechas.clear()
+        listGeneral.fechas.clear()
+        listGeneral.ids.clear()
         val url = "http://192.168.100.8:1337/Paciente"
         var aux = JSONArray()
 
@@ -69,6 +82,7 @@ class ListaPacienteActivity : AppCompatActivity() {
                     listGeneral.apellidos.add(resp.getJSONObject(i).getString("apellidos"))
                     listGeneral.fechas.add(resp.getJSONObject(i).getString("fechaNacimiento"))
                     listGeneral.ids.add(resp.getJSONObject(i).getInt("id"))
+                    listGeneral.seguros.add(resp.getJSONObject(i).getBoolean("tieneSeguro"))
                 }
                 paciente_recyclerView.layoutManager = LinearLayoutManager(this)
                 paciente_recyclerView.itemAnimator = DefaultItemAnimator()
@@ -78,9 +92,6 @@ class ListaPacienteActivity : AppCompatActivity() {
                 Log.i("http", "DatosB: ${listGeneral.nombres.size}")
 
             }
-
-
-
     }
 
     override fun onPause(){
@@ -89,6 +100,7 @@ class ListaPacienteActivity : AppCompatActivity() {
         listGeneral.fechas.clear()
         listGeneral.fechas.clear()
         listGeneral.ids.clear()
+        listGeneral.seguros.clear()
     }
 
 
@@ -146,18 +158,28 @@ class ListaPacienteActivity : AppCompatActivity() {
             val identificador = listadePacientes.ids.get(position)
             holder.PacienteNombreIndividual?.text =listadePacientes.nombres.get(position)
             holder.PacienteApellidoIndividual?.text = listadePacientes.apellidos.get(position)
-            holder.PacienteFechaIndividual?.text =listadePacientes.fechas.get(position)
+            holder.PacienteFechaIndividual?.text =listadePacientes.fechas.get(position).toString()
+
 
             holder.layoutRef.setOnClickListener {
                 val popUp = PopupMenu(contexto,holder.PacienteNombreIndividual)
                 popUp.inflate(R.menu.option_menu)
+
                 popUp.setOnMenuItemClickListener {
                     item -> when (item.itemId){
                     R.id.item_menu_editar->{
                         Log.i("Menu","${identificador}")
+                        val pacienteEditar = Paciente(listadePacientes.nombres.get(position),
+                            listadePacientes.apellidos.get(position),
+                            listadePacientes.fechas.get(position),
+                            listadePacientes.seguros.get(position))
 
+                        val intentActividadIntent = Intent(this.contexto,
+                            CrearPacienteActivity::class.java
+                        )
 
-
+                        intentActividadIntent.putExtra("sistema", pacienteEditar)
+                        startActivity(contexto,intentActividadIntent,null)
                         true
                     }
                     R.id.item_menu_eliminar->{
@@ -175,7 +197,7 @@ class ListaPacienteActivity : AppCompatActivity() {
                                     is Result.Success -> run {
                                         val data = result.get()
                                         Log.i("eliminar", data)
-
+                                        contexto.cargarDatos()
 
                                     }
                                 }
@@ -183,9 +205,24 @@ class ListaPacienteActivity : AppCompatActivity() {
                         true
                     }
                     R.id.item_menu_listar_medicamentos->{
+
                         true
                     }
                     R.id.item_menu_compartir->{
+//
+                        val correo = listadePacientes.nombres.get(position)+"@epn.edu.ec"
+                        val subject = "Correo de ejemplo"
+                        val texto = "Mi cumple: "+listadePacientes.fechas.get(position)
+                        val intent = Intent(Intent.ACTION_SEND)
+
+                        intent.type = "text/html"
+
+                        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(correo))
+                        intent.putExtra(Intent.EXTRA_SUBJECT, subject)
+                        intent.putExtra(Intent.EXTRA_TEXT, texto)
+
+                        startActivity(contexto,intent,null)
+
                         true
                     }
                     else -> false
@@ -257,6 +294,7 @@ class ListaPacienteActivity : AppCompatActivity() {
         val nombres = mutableListOf<String>()
         val apellidos = mutableListOf<String>()
         val fechas= mutableListOf<String>()
+        val seguros = mutableListOf<Boolean>()
 
         fun añadirNombre(name: String){
             nombres.add(name)

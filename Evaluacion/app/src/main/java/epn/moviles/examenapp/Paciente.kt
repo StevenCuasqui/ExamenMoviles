@@ -6,19 +6,19 @@ import java.util.*
 
 class Paciente( var nombres: String,
               var apellidos: String,
-              var fechaNacimiento: Date,
+              var fechaNacimiento: String,
               var tieneSeguro: Boolean) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readString(),
-        parcel.readSerializable() as Date,
+        parcel.readString(),
         parcel.readSerializable() as Boolean) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(nombres)
         parcel.writeString(apellidos)
-        parcel.writeSerializable(fechaNacimiento)
+        parcel.writeString(fechaNacimiento)
         parcel.writeSerializable(tieneSeguro)
     }
 

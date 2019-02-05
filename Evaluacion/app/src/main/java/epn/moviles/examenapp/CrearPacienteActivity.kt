@@ -2,6 +2,7 @@ package epn.moviles.examenapp
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Klaxon
@@ -47,7 +48,7 @@ class CrearPacienteActivity : AppCompatActivity() {
             "fechaNacimiento" to fechaNacimiento,
             "tieneSeguro" to tieneSeguro
         )
-            val paciente = Paciente
+        val paciente = Paciente
 //        val paciente = PacienteHttp("","","",true,null,null,null)
 //        val paciente2 = PacienteHttp("","","",false,null,null,null)
 //        val req = listOf<PacienteHttp>(paciente,paciente2)
@@ -91,10 +92,10 @@ class CrearPacienteActivity : AppCompatActivity() {
     }
 
     class PacienteHttp(var nombres: String,
-                      var apellidos: String,
+                       var apellidos: String,
                        var fechaNacimiento: String,
                        var tieneSeguro: Boolean,
-                      var createdAt: Long? = null,
-                      var updatedAt: Long? = null,
-                      var id: Int? = null) {} //Enviar esta clase a tronsformacion para ser Json, enviar ese Json al Server
+                       var createdAt: Long? = null,
+                       var updatedAt: Long? = null,
+                       var id: Int? = null) {} //Enviar esta clase a tronsformacion para ser Json, enviar ese Json al Server
 }
