@@ -2,19 +2,10 @@ package epn.moviles.examenapp
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Parcelable
 import android.util.Log
-import com.beust.klaxon.JsonObject
-import com.beust.klaxon.Klaxon
-import com.beust.klaxon.KlaxonJson
-import com.beust.klaxon.json
-import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
 import kotlinx.android.synthetic.main.activity_crear_paciente.*
-import kotlinx.android.synthetic.main.activity_main.*
-import org.json.JSONObject
-import java.lang.ref.ReferenceQueue
 
 class CrearPacienteActivity : AppCompatActivity() {
 

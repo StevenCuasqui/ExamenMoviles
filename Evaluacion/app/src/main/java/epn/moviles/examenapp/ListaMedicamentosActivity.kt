@@ -6,34 +6,30 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat.startActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.PopupMenu
 import android.support.v7.widget.RecyclerView
 import android.util.Log
-import android.view.*
-import android.widget.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.RelativeLayout
+import android.widget.TextView
 import com.github.kittinunf.fuel.android.extension.responseJson
 import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
-import epn.moviles.examenapp.ListaPacienteActivity.PacienteAdapter.MyViewHolder
-import kotlinx.android.synthetic.main.activity_lista_paciente.*
-import kotlinx.android.synthetic.main.paciente_item.view.*
+import kotlinx.android.synthetic.main.activity_lista_medicamentos.*
 import org.json.JSONArray
 
-
-class ListaPacienteActivity : AppCompatActivity() {
-
-//    val nombresPacientes: ArrayList<String> = ArrayList()
-//    val apellidosPacientes: ArrayList<String> = ArrayList()
-    val listGeneral = listadePacientes
+class ListaMedicamentosActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_lista_paciente)
-        cargarDatos()
-
-
-
+        setContentView(R.layout.activity_lista_medicamentos)
     }
+
+    val listGeneral = listadePacientes
+
     fun cargarDatos(){
         listGeneral.nombres.clear()
         listGeneral.fechas.clear()
@@ -70,11 +66,12 @@ class ListaPacienteActivity : AppCompatActivity() {
                     listGeneral.ids.add(resp.getJSONObject(i).getInt("id"))
                     listGeneral.seguros.add(resp.getJSONObject(i).getBoolean("tieneSeguro"))
                 }
-                paciente_recyclerView.layoutManager = LinearLayoutManager(this)
-                paciente_recyclerView.itemAnimator = DefaultItemAnimator()
-                paciente_recyclerView.adapter = PacienteAdapter(listGeneral, this,paciente_recyclerView)
-                registerForContextMenu(paciente_recyclerView)
-                PacienteAdapter(listGeneral, this,paciente_recyclerView).notifyDataSetChanged()
+
+                medicamento_recyclerView.layoutManager = LinearLayoutManager(this)
+                medicamento_recyclerView.itemAnimator = DefaultItemAnimator()
+                medicamento_recyclerView.adapter = PacienteAdapter(listGeneral, this,medicamento_recyclerView)
+                registerForContextMenu(medicamento_recyclerView)
+                PacienteAdapter(listGeneral, this,medicamento_recyclerView).notifyDataSetChanged()
                 Log.i("http", "DatosB: ${listGeneral.nombres.size}")
 
             }
@@ -87,14 +84,15 @@ class ListaPacienteActivity : AppCompatActivity() {
         listGeneral.fechas.clear()
         listGeneral.ids.clear()
         listGeneral.seguros.clear()
-        }
+    }
 
 
 
 
     class PacienteAdapter(private val listaPacientes : listadePacientes,
                           private val contexto: ListaPacienteActivity,
-                          private val recyclerView: RecyclerView) : RecyclerView.Adapter<MyViewHolder>() {
+                          private val recyclerView: RecyclerView
+    ) : RecyclerView.Adapter<PacienteAdapter.MyViewHolder>() {
         val urlGen = "http://192.168.100.8:1337/Paciente"
         inner class MyViewHolder (view: View) : RecyclerView.ViewHolder(view) {
 
@@ -153,7 +151,7 @@ class ListaPacienteActivity : AppCompatActivity() {
                 popUp.inflate(R.menu.option_menu)
 
                 popUp.setOnMenuItemClickListener {
-                    item -> when (item.itemId){
+                        item -> when (item.itemId){
                     R.id.item_menu_editar->{
                         Log.i("Menu","${identificador}")
                         var nombre = listadePacientes.nombres.get(position)
@@ -237,7 +235,7 @@ class ListaPacienteActivity : AppCompatActivity() {
 
     }
 
-//    fun llenarListView() {
+    //    fun llenarListView() {
 //        val adapter = ArrayAdapter<String>(
 //            this,
 //            android.R.layout.simple_list_item_1
@@ -289,13 +287,13 @@ class ListaPacienteActivity : AppCompatActivity() {
 //
 //
 //    }
-fun limp(){
-    listadePacientes.nombres.clear()
-    listadePacientes.seguros.clear()
-    listadePacientes.ids.clear()
-    listadePacientes.fechas.clear()
-    listadePacientes.apellidos.clear()
-}
+    fun limp(){
+        listadePacientes.nombres.clear()
+        listadePacientes.seguros.clear()
+        listadePacientes.ids.clear()
+        listadePacientes.fechas.clear()
+        listadePacientes.apellidos.clear()
+    }
     companion object listadePacientes{
         val ids = mutableListOf<Int>()
         val nombres = mutableListOf<String>()
@@ -320,7 +318,4 @@ fun limp(){
         }
 
     }
-
-
-
 }

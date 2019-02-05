@@ -8,6 +8,7 @@ class Paciente( var nombres: String,
               var apellidos: String,
               var fechaNacimiento: String,
               var tieneSeguro: Boolean) : Parcelable {
+
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readString(),
