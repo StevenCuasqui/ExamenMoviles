@@ -8,7 +8,7 @@ class Medicamento(var gramosAIngerir: Double,
                var nombre: String,
                var composicion: String,
                var usadoPara: String,
-                  var fechaCaducidad: Date,
+                  var fechaCaducidad: String,
                   var numeroPastillas: Int,
                   public var pacienteId: Int) : Parcelable {
 
@@ -17,7 +17,7 @@ class Medicamento(var gramosAIngerir: Double,
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
-        parcel.readSerializable() as Date,
+        parcel.readString(),
         parcel.readInt(),
         parcel.readInt()
     ) {

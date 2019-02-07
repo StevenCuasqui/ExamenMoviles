@@ -19,28 +19,49 @@ import com.github.kittinunf.fuel.httpDelete
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
 import kotlinx.android.synthetic.main.activity_lista_medicamentos.*
+import kotlinx.android.synthetic.main.medicamento_item.view.*
 import org.json.JSONArray
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 class ListaMedicamentosActivity : AppCompatActivity() {
+
+    var identificaPaciente: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lista_medicamentos)
+        val identifiPaciente = intent.getIntExtra("idPaciente",0)
+        identificaPaciente = identifiPaciente
+
+        button_CrearMedicamento.setOnClickListener {  iraCrearMedicamento()}
     }
 
-    val listGeneral = listadePacientes
+    fun iraCrearMedicamento(){
+        val intent = Intent(this,CrearMedicamenteActivity::class.java)
+        intent.putExtra("idPaciente",identificaPaciente)
+        startActivity(intent)
+    }
+
+
+    val listGeneral = listadeMedicamentos
 
     fun cargarDatos(){
-        listGeneral.nombres.clear()
-        listGeneral.fechas.clear()
-        listGeneral.fechas.clear()
-        listGeneral.ids.clear()
-        val url = "http://192.168.100.8:1337/Paciente"
+        listGeneral.idMed.clear()
+        listGeneral.gramosAIngerir.clear()
+        listGeneral.nombre.clear()
+        listGeneral.composicion.clear()
+        listGeneral.usadoPara.clear()
+        listGeneral.fechaCaducidad.clear()
+        listGeneral.numeroPastillas.clear()
+        listGeneral.pacienteId.clear()
+        val url = "http://192.168.100.8:1337/Medicamento"
         var aux = JSONArray()
 
 
         url
-            .httpGet()
+            .httpGet(listOf("pacienteId" to identificaPaciente))
             .responseJson{ request, response, result ->
 
                 when (result) {
@@ -60,46 +81,55 @@ class ListaMedicamentosActivity : AppCompatActivity() {
 
                 var resp= result.get().array()
                 for (i in 0 until aux.length()) {
-                    listGeneral.nombres.add(resp.getJSONObject(i).getString("nombres"))
-                    listGeneral.apellidos.add(resp.getJSONObject(i).getString("apellidos"))
-                    listGeneral.fechas.add(resp.getJSONObject(i).getString("fechaNacimiento"))
-                    listGeneral.ids.add(resp.getJSONObject(i).getInt("id"))
-                    listGeneral.seguros.add(resp.getJSONObject(i).getBoolean("tieneSeguro"))
+                    //listGeneral.idMed.add(resp.getJSONObject(i).getInt("idMed"))
+                    listGeneral.nombre.add(resp.getJSONObject(i).getString("nombre"))
+                    listGeneral.gramosAIngerir.add(resp.getJSONObject(i).getDouble("gramosAIngerir"))
+                    listGeneral.composicion.add(resp.getJSONObject(i).getString("composicion"))
+                    listGeneral.usadoPara.add(resp.getJSONObject(i).getString("usadoPara"))
+                    listGeneral.fechaCaducidad.add(resp.getJSONObject(i).getString("fechaCaducidad"))
+                    listGeneral.numeroPastillas.add(resp.getJSONObject(i).getInt("numeroPastillas"))
+                    listGeneral.pacienteId.add(resp.getJSONObject(i).getInt("pacienteId"))
+
                 }
 
                 medicamento_recyclerView.layoutManager = LinearLayoutManager(this)
                 medicamento_recyclerView.itemAnimator = DefaultItemAnimator()
-                medicamento_recyclerView.adapter = PacienteAdapter(listGeneral, this,medicamento_recyclerView)
+
+                medicamento_recyclerView.adapter = MedicamentoAdapter(listGeneral, this,medicamento_recyclerView)
                 registerForContextMenu(medicamento_recyclerView)
-                PacienteAdapter(listGeneral, this,medicamento_recyclerView).notifyDataSetChanged()
-                Log.i("http", "DatosB: ${listGeneral.nombres.size}")
+                MedicamentoAdapter(listGeneral, this,medicamento_recyclerView).notifyDataSetChanged()
+                Log.i("http", "DatosB: ${listGeneral.nombre.size}")
 
             }
     }
 
     override fun onPause(){
         super.onPause()
-        listGeneral.nombres.clear()
-        listGeneral.fechas.clear()
-        listGeneral.fechas.clear()
-        listGeneral.ids.clear()
-        listGeneral.seguros.clear()
+        listGeneral.idMed.clear()
+        listGeneral.gramosAIngerir.clear()
+        listGeneral.nombre.clear()
+        listGeneral.composicion.clear()
+        listGeneral.usadoPara.clear()
+        listGeneral.fechaCaducidad.clear()
+        listGeneral.numeroPastillas.clear()
+        listGeneral.pacienteId.clear()
     }
 
 
 
 
-    class PacienteAdapter(private val listaPacientes : listadePacientes,
-                          private val contexto: ListaPacienteActivity,
-                          private val recyclerView: RecyclerView
-    ) : RecyclerView.Adapter<PacienteAdapter.MyViewHolder>() {
+    class MedicamentoAdapter(private val listaMedicamentos : listadeMedicamentos,
+                             private val contexto: ListaMedicamentosActivity,
+                             private val recyclerView: RecyclerView
+    ) : RecyclerView.Adapter<MedicamentoAdapter.MyViewHolder>() {
         val urlGen = "http://192.168.100.8:1337/Paciente"
         inner class MyViewHolder (view: View) : RecyclerView.ViewHolder(view) {
-
-            val PacienteNombreIndividual = view.text_paciente_individual
-            val PacienteApellidoIndividual = view.text_paciente_apellido
-            val PacienteFechaIndividual = view.text_fechanacimiento
-
+            val MedicamentoNombreInd = view.text_nombre_medicamento
+            val MedicamentoGramosInd = view.text_gramosAIngerir
+            val MedicamentoComposicionInd = view.text_composicion
+            val MedicamentoUsadoParaInd = view.text_usadoPara
+            val MedicamentoFechaCaduInd = view.text_fechaCaducidad
+            val MedicamentoNPastillasInd = view.text_numeroPastillas
 
             val layoutRef = view.findViewById(R.id.relative_layout) as RelativeLayout
             init{
@@ -123,7 +153,7 @@ class ListaMedicamentosActivity : AppCompatActivity() {
 
 
         override fun getItemCount(): Int {
-            return listaPacientes.nombres.size
+            return listaMedicamentos.nombre.size
         }
 
 
@@ -131,7 +161,7 @@ class ListaMedicamentosActivity : AppCompatActivity() {
             val itemView = LayoutInflater
                 .from(parent.context)
                 .inflate(
-                    R.layout.paciente_item,
+                    R.layout.medicamento_item,
                     parent,
                     false
                 )
@@ -139,43 +169,53 @@ class ListaMedicamentosActivity : AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-            val arregloLenght = listaPacientes.nombres[position]
-            var identificador = listadePacientes.ids.get(position)
-            holder.PacienteNombreIndividual?.text =listadePacientes.nombres.get(position)
-            holder.PacienteApellidoIndividual?.text = listadePacientes.apellidos.get(position)
-            holder.PacienteFechaIndividual?.text =listadePacientes.fechas.get(position).toString()
+            val arregloLenght = listaMedicamentos.nombre[position]
+            var identificador = listadeMedicamentos.idMed.get(position)
 
+            holder.MedicamentoNombreInd?.text =listadeMedicamentos.nombre.get(position)
+            holder.MedicamentoGramosInd?.text =listadeMedicamentos.gramosAIngerir.get(position).toString()
+            holder.MedicamentoComposicionInd?.text =listadeMedicamentos.composicion.get(position)
+            holder.MedicamentoUsadoParaInd?.text =listadeMedicamentos.usadoPara.get(position)
+            holder.MedicamentoFechaCaduInd?.text =listadeMedicamentos.fechaCaducidad.get(position)
+            holder.MedicamentoNPastillasInd?.text =listadeMedicamentos.numeroPastillas.get(position).toString()
 
             holder.layoutRef.setOnClickListener {
-                var popUp = PopupMenu(contexto,holder.PacienteNombreIndividual)
+                var popUp = PopupMenu(contexto,holder.MedicamentoNombreInd)
                 popUp.inflate(R.menu.option_menu)
 
                 popUp.setOnMenuItemClickListener {
                         item -> when (item.itemId){
                     R.id.item_menu_editar->{
                         Log.i("Menu","${identificador}")
-                        var nombre = listadePacientes.nombres.get(position)
-                        var apellido = listadePacientes.apellidos.get(position)
-                        var fechaNac = listadePacientes.fechas.get(position)
-                        var seguroTie = listadePacientes.seguros.get(position)
-                        var identi = listadePacientes.ids.get(position)
+                        var nombreMed = listadeMedicamentos.nombre.get(position)
+                        var gramosaingerir = listadeMedicamentos.gramosAIngerir.get(position)
+                        var composicionMed = listadeMedicamentos.composicion.get(position)
+                        var usadoParaMed = listadeMedicamentos.usadoPara.get(position)
+                        var fechacaduMed = listadeMedicamentos.fechaCaducidad.get(position)
+                        var numeroPastillas = listadeMedicamentos.numeroPastillas.get(position)
+                        var MedIdPaciente = listadeMedicamentos.idMed.get(position)
 
-                        var pacienteEditar = Paciente(nombre,
-                            apellido,
-                            fechaNac,
-                            seguroTie)
+
+                        var medicamentoEditar = Medicamento(gramosaingerir,
+                            nombreMed,
+                            composicionMed,
+                            usadoParaMed,
+                            fechacaduMed,
+                            numeroPastillas,
+                            MedIdPaciente
+                            )
                         contexto.limp()
                         val intentEditar = Intent(contexto,
-                            EPacienteActivity::class.java
+                            CrearMedicamenteActivity::class.java
                         )
-                        intentEditar.putExtra("paciente",pacienteEditar)
+                        intentEditar.putExtra("medicamento",medicamentoEditar)
 //                        intentEditar.putExtra("nombre", nombre)
 //                        intentEditar.putExtra("apellido", apellido)
 //                        intentEditar.putExtra("fechaNac", fechaNac)
 //                        intentEditar.putExtra("seguro", seguroTie)
 
-                        intentEditar.putExtra("id",identi)
-                        Log.i("contenido","${pacienteEditar}")
+                        intentEditar.putExtra("idPaciente",MedIdPaciente)
+                        Log.i("contenido","${medicamentoEditar}")
                         startActivity(contexto,intentEditar,null)
 
                         //Log.i("contenido","${pacienteEditar}")
@@ -203,15 +243,11 @@ class ListaMedicamentosActivity : AppCompatActivity() {
                             }
                         true
                     }
-                    R.id.item_menu_listar_medicamentos->{
-
-                        true
-                    }
                     R.id.item_menu_compartir->{
 //
-                        val correo = listadePacientes.nombres.get(position)+"@epn.edu.ec"
+                        val correo = listadeMedicamentos.nombre.get(position)+"@epn.edu.ec"
                         val subject = "Correo de ejemplo"
-                        val texto = "Mi cumple: "+listadePacientes.fechas.get(position)
+                        val texto = "Mi cumple: "+listadeMedicamentos.fechaCaducidad.get(position)
                         val intent = Intent(Intent.ACTION_SEND)
 
                         intent.type = "text/html"
@@ -235,87 +271,55 @@ class ListaMedicamentosActivity : AppCompatActivity() {
 
     }
 
-    //    fun llenarListView() {
-//        val adapter = ArrayAdapter<String>(
-//            this,
-//            android.R.layout.simple_list_item_1
-//        )
-//
-//        list_view_context_menu.adapter = adapter
-//
-//        // Registrar para que sirvan los menus contextuales
-//
-//        registerForContextMenu(list_view_context_menu)
-//    }
-//
-//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-//        val inflater = menuInflater
-//        inflater.inflate(R.menu.option_menu, menu)
-//        return true
-//    }
-//
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        // Handle item selection
-//        when (item.getItemId()) {
-//            R.id.abrir -> {
-//                Log.i("menu", "Abrir")
-//                return true
-//            }
-//            R.id.nuevo -> {
-//                Log.i("menu", "Nuevo")
-//                return true
-//            }
-//            R.id.editar -> {
-//                Log.i("menu", "Editar")
-//                return true
-//            }
-//            R.id.eliminar -> {
-//                Log.i("menu", "Eliminar")
-//                return true
-//            }
-//            else -> return super.onOptionsItemSelected(item)
-//        }
-//    }
-//
-//    override fun onCreateContextMenu(menu: ContextMenu?,
-//        v: View?,
-//        menuInfo:ContextMenu.ContextMenuInfo?) {
-//        super.onCreateContextMenu(menu, v, menuInfo)
-//
-//        val inflater = menuInflater
-//        inflater.inflate(R.menu.option_menu,menu)
-//
-//
-//    }
     fun limp(){
-        listadePacientes.nombres.clear()
-        listadePacientes.seguros.clear()
-        listadePacientes.ids.clear()
-        listadePacientes.fechas.clear()
-        listadePacientes.apellidos.clear()
+        listadeMedicamentos.gramosAIngerir.clear()
+        listadeMedicamentos.nombre.clear()
+        listadeMedicamentos.composicion.clear()
+        listadeMedicamentos.usadoPara.clear()
+        listadeMedicamentos.fechaCaducidad.clear()
+        listadeMedicamentos.numeroPastillas.clear()
+        listadeMedicamentos.pacienteId.clear()
     }
-    companion object listadePacientes{
-        val ids = mutableListOf<Int>()
-        val nombres = mutableListOf<String>()
-        val apellidos = mutableListOf<String>()
-        val fechas= mutableListOf<String>()
-        val seguros = mutableListOf<Boolean>()
+    companion object listadeMedicamentos{
+        val idMed = mutableListOf<Int>()
+        val gramosAIngerir = mutableListOf<Double>()
+        val nombre = mutableListOf<String>()
+        val composicion = mutableListOf<String>()
+        val usadoPara = mutableListOf<String>()
+        val fechaCaducidad = mutableListOf<String>()
+        val numeroPastillas = mutableListOf<Int>()
+        val pacienteId = mutableListOf<Int>()
 
-        fun añadirNombre(name: String){
-            nombres.add(name)
+
+//        fun añadirIdMed(ids: Int){
+//            this.idMed.add(ids)
+//        }
+        fun añadirgramosAIngerir(gramos: Double){
+            this.gramosAIngerir.add(gramos)
         }
 
-        fun añadirApellido(apellido: String){
-            apellidos.add(apellido)
+        fun añadirNombre(nombre: String){
+            this.nombre.add(nombre)
         }
 
-        fun añadirNacimiento(fecha: String){
-            fechas.add(fecha)
+        fun añadirComposicion(composicion: String){
+            this.composicion.add(composicion)
         }
 
-        fun añadirId(id: Int){
-            ids.add(id)
+        fun añadirUso(uso:String){
+            this.usadoPara.add(uso)
         }
+
+        fun añadirFechaCaducidad(fecha: String){
+            this.fechaCaducidad.add(fecha)
+        }
+        fun añadirNumeroPastillas(numeroPastillas: Int){
+            this.numeroPastillas.add(numeroPastillas)
+        }
+         fun añadirPacienteId(idPaciente: Int){
+             this.pacienteId.add(idPaciente)
+         }
+
 
     }
 }

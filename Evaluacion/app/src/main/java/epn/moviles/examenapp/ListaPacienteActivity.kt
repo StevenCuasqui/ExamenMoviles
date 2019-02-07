@@ -206,7 +206,9 @@ class ListaPacienteActivity : AppCompatActivity() {
                         true
                     }
                     R.id.item_menu_listar_medicamentos->{
-
+                        val intentMedicamentos = Intent(contexto,ListaMedicamentosActivity::class.java)
+                        intentMedicamentos.putExtra("idPaciente",identificador)
+                        startActivity(contexto,intentMedicamentos,null)
                         true
                     }
                     R.id.item_menu_compartir->{
