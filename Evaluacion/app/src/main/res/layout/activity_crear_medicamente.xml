@@ -52,47 +52,56 @@
             app:layout_constraintTop_toBottomOf="@+id/textView19" app:layout_constraintHorizontal_bias="0.448"
             android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintVertical_bias="0.0"/>
+
     <EditText
-            android:layout_width="221dp"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:text="Name"
-            android:ems="10"
-            android:id="@+id/texto_nombreMed"
-            app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="16dp" android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toEndOf="@+id/textView15"
-            android:layout_marginStart="8dp" app:layout_constraintHorizontal_bias="0.714"/>
+        android:id="@+id/texto_nombreMed"
+        android:layout_width="221dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.714"
+        app:layout_constraintStart_toEndOf="@+id/textView15"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <EditText
-            android:layout_width="214dp"
-            android:layout_height="49dp"
-            android:inputType="textPersonName"
-            android:text="Name"
-            android:ems="10"
-            android:id="@+id/texto_caducidadMed"
-            app:layout_constraintStart_toStartOf="@+id/texto_usoMed"
-            app:layout_constraintEnd_toEndOf="@+id/texto_usoMed"
-            app:layout_constraintTop_toBottomOf="@+id/texto_usoMed"
-            app:layout_constraintHorizontal_bias="1.0" android:layout_marginTop="16dp"/>
+        android:id="@+id/texto_caducidadMed"
+        android:layout_width="214dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="@+id/texto_usoMed"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/texto_usoMed"
+        app:layout_constraintTop_toBottomOf="@+id/texto_usoMed" />
+
     <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:text="Name"
-            android:ems="10"
-            android:id="@+id/texto_compoMed" android:layout_marginTop="32dp"
-            app:layout_constraintTop_toBottomOf="@+id/texto_gramosMed"
-            app:layout_constraintStart_toStartOf="@+id/texto_gramosMed" app:layout_constraintEnd_toEndOf="@+id/texto_gramosMed"
-            app:layout_constraintHorizontal_bias="0.0"/>
+        android:id="@+id/texto_compoMed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="@+id/texto_gramosMed"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/texto_gramosMed"
+        app:layout_constraintTop_toBottomOf="@+id/texto_gramosMed" />
+
     <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:text="Name"
-            android:ems="10"
-            android:id="@+id/texto_usoMed"
-            app:layout_constraintStart_toStartOf="@+id/texto_compoMed" app:layout_constraintEnd_toEndOf="@+id/texto_compoMed"
-            android:layout_marginTop="24dp" app:layout_constraintTop_toBottomOf="@+id/texto_compoMed"
-            app:layout_constraintHorizontal_bias="0.0"/>
+        android:id="@+id/texto_usoMed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="@+id/texto_compoMed"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/texto_compoMed"
+        app:layout_constraintTop_toBottomOf="@+id/texto_compoMed" />
     <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

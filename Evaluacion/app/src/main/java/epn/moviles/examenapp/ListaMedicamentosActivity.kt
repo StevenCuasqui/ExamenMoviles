@@ -27,6 +27,8 @@ import java.util.*
 
 class ListaMedicamentosActivity : AppCompatActivity() {
 
+    var miPacientito: Paciente? = null
+
     var identificaPaciente: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,12 +38,23 @@ class ListaMedicamentosActivity : AppCompatActivity() {
         identificaPaciente = identifiPaciente
 
         button_CrearMedicamento.setOnClickListener {  iraCrearMedicamento()}
+        val miPaciente = intent.getParcelableExtra<Paciente>("paciente")
+        miPacientito =miPaciente
+
+        llenarPacienteCampos()
+        cargarDatos()
     }
 
     fun iraCrearMedicamento(){
         val intent = Intent(this,CrearMedicamenteActivity::class.java)
         intent.putExtra("idPaciente",identificaPaciente)
         startActivity(intent)
+    }
+
+    fun llenarPacienteCampos(){
+        text_Apellidos_Paciente.setText(miPacientito?.apellidos.toString())
+        text_fecha_Paciente.setText(miPacientito?.fechaNacimiento.toString())
+        text_nombre_paciente.setText(miPacientito?.nombres.toString())
     }
 
 
@@ -56,14 +69,14 @@ class ListaMedicamentosActivity : AppCompatActivity() {
         listGeneral.fechaCaducidad.clear()
         listGeneral.numeroPastillas.clear()
         listGeneral.pacienteId.clear()
-        val url = "http://192.168.100.8:1337/Medicamento"
+        Log.i("http", "Direccion: ${identificaPaciente}")
+        val url = "http://172.31.105.210:1337/Medicamento/?pacienteId=${identificaPaciente}"
         var aux = JSONArray()
 
 
         url
-            .httpGet(listOf("pacienteId" to identificaPaciente))
+            .httpGet()
             .responseJson{ request, response, result ->
-
                 when (result) {
                     is Result.Failure -> {
                         val exepcion = result.getException()
@@ -73,15 +86,17 @@ class ListaMedicamentosActivity : AppCompatActivity() {
                     is Result.Success -> {
                         val data = result.get()
                         aux = data.array()
+                        Log.i("http", "Consulta: ${request}")
                         Log.i("http", "Datos: ${aux}")
                         Log.i("Tipo", "${aux::class.simpleName}")
 //
+
                     }
                 }
 
                 var resp= result.get().array()
                 for (i in 0 until aux.length()) {
-                    //listGeneral.idMed.add(resp.getJSONObject(i).getInt("idMed"))
+                    listGeneral.idMed.add(resp.getJSONObject(i).getInt("id"))
                     listGeneral.nombre.add(resp.getJSONObject(i).getString("nombre"))
                     listGeneral.gramosAIngerir.add(resp.getJSONObject(i).getDouble("gramosAIngerir"))
                     listGeneral.composicion.add(resp.getJSONObject(i).getString("composicion"))
@@ -122,7 +137,7 @@ class ListaMedicamentosActivity : AppCompatActivity() {
                              private val contexto: ListaMedicamentosActivity,
                              private val recyclerView: RecyclerView
     ) : RecyclerView.Adapter<MedicamentoAdapter.MyViewHolder>() {
-        val urlGen = "http://192.168.100.8:1337/Paciente"
+        val urlGen = "http://172.31.105.210:1337/Medicamento"
         inner class MyViewHolder (view: View) : RecyclerView.ViewHolder(view) {
             val MedicamentoNombreInd = view.text_nombre_medicamento
             val MedicamentoGramosInd = view.text_gramosAIngerir
@@ -131,10 +146,10 @@ class ListaMedicamentosActivity : AppCompatActivity() {
             val MedicamentoFechaCaduInd = view.text_fechaCaducidad
             val MedicamentoNPastillasInd = view.text_numeroPastillas
 
-            val layoutRef = view.findViewById(R.id.relative_layout) as RelativeLayout
+            val layoutRefe = view.findViewById(R.id.relative_medicamento_layout) as RelativeLayout
             init{
 
-                val layout = view.findViewById(R.id.relative_layout) as RelativeLayout
+                val layout = view.findViewById(R.id.relative_medicamento_layout) as RelativeLayout
 
                 layout
                     .setOnClickListener {
@@ -170,7 +185,7 @@ class ListaMedicamentosActivity : AppCompatActivity() {
 
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
             val arregloLenght = listaMedicamentos.nombre[position]
-            var identificador = listadeMedicamentos.idMed.get(position)
+            var identificador = listaMedicamentos.idMed.get(position)
 
             holder.MedicamentoNombreInd?.text =listadeMedicamentos.nombre.get(position)
             holder.MedicamentoGramosInd?.text =listadeMedicamentos.gramosAIngerir.get(position).toString()
@@ -179,7 +194,7 @@ class ListaMedicamentosActivity : AppCompatActivity() {
             holder.MedicamentoFechaCaduInd?.text =listadeMedicamentos.fechaCaducidad.get(position)
             holder.MedicamentoNPastillasInd?.text =listadeMedicamentos.numeroPastillas.get(position).toString()
 
-            holder.layoutRef.setOnClickListener {
+            holder.layoutRefe.setOnClickListener {
                 var popUp = PopupMenu(contexto,holder.MedicamentoNombreInd)
                 popUp.inflate(R.menu.option_menu)
 

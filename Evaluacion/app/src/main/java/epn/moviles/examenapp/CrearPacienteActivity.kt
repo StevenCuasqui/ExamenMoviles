@@ -21,7 +21,7 @@ class CrearPacienteActivity : AppCompatActivity() {
 
 
     fun crearPaciente(){
-        val url = "http://192.168.100.8:1337/Paciente"
+        val url = "http://172.31.105.210:1337/Paciente"
         val nombres = texto_nombre.text
         val apellidos = texto_apellido.text
         val fechaNacimiento = texto_fecha.text

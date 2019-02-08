@@ -29,17 +29,24 @@ class ListaPacienteActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lista_paciente)
-        cargarDatos()
+        //cargarDatos()
 
 
 
     }
+
+    override fun onResume(){
+        super.onResume()
+        cargarDatos()
+    }
+
+
     fun cargarDatos(){
         listGeneral.nombres.clear()
         listGeneral.fechas.clear()
         listGeneral.fechas.clear()
         listGeneral.ids.clear()
-        val url = "http://192.168.100.8:1337/Paciente"
+        val url = "http://172.31.105.210:1337/Paciente"
         var aux = JSONArray()
 
 
@@ -95,7 +102,7 @@ class ListaPacienteActivity : AppCompatActivity() {
     class PacienteAdapter(private val listaPacientes : listadePacientes,
                           private val contexto: ListaPacienteActivity,
                           private val recyclerView: RecyclerView) : RecyclerView.Adapter<MyViewHolder>() {
-        val urlGen = "http://192.168.100.8:1337/Paciente"
+        val urlGen = "http://172.31.105.210:1337/Paciente"
         inner class MyViewHolder (view: View) : RecyclerView.ViewHolder(view) {
 
             val PacienteNombreIndividual = view.text_paciente_individual
@@ -110,7 +117,7 @@ class ListaPacienteActivity : AppCompatActivity() {
 
                 layout
                     .setOnClickListener {
-                        val nombreActual = it.findViewById(R.id.text_paciente_individual) as TextView
+                        val nombreActual = it.findViewById(R.id.text_nombre_medicamento) as TextView
 
                         Log.i("recycler-view",
                             "El nombre actual es: ${nombreActual.text}")
@@ -206,9 +213,30 @@ class ListaPacienteActivity : AppCompatActivity() {
                         true
                     }
                     R.id.item_menu_listar_medicamentos->{
-                        val intentMedicamentos = Intent(contexto,ListaMedicamentosActivity::class.java)
-                        intentMedicamentos.putExtra("idPaciente",identificador)
-                        startActivity(contexto,intentMedicamentos,null)
+
+                        var nombre = listadePacientes.nombres.get(position)
+                        var apellido = listadePacientes.apellidos.get(position)
+                        var fechaNac = listadePacientes.fechas.get(position)
+                        var seguroTie = listadePacientes.seguros.get(position)
+                        var identi = listadePacientes.ids.get(position)
+
+                        var pacienteEditar = Paciente(nombre,
+                                apellido,
+                                fechaNac,
+                                seguroTie)
+                        contexto.limp()
+                        val intentEditar = Intent(contexto,
+                                ListaMedicamentosActivity::class.java
+                        )
+                        intentEditar.putExtra("paciente",pacienteEditar)
+//                        intentEditar.putExtra("nombre", nombre)
+//                        intentEditar.putExtra("apellido", apellido)
+//                        intentEditar.putExtra("fechaNac", fechaNac)
+//                        intentEditar.putExtra("seguro", seguroTie)
+
+                        intentEditar.putExtra("id",identi)
+                        Log.i("contenido","${pacienteEditar}")
+                        startActivity(contexto,intentEditar,null)
                         true
                     }
                     R.id.item_menu_compartir->{

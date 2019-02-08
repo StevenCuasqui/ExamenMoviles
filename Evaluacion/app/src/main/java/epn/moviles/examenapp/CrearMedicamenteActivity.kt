@@ -21,13 +21,13 @@ class CrearMedicamenteActivity : AppCompatActivity() {
 
 
     fun crearMedicamento(){
-        val url = "http://192.168.100.8:1337/Medicamento"
-        val MedicamentoNombreInd = texto_nombreMed
-        val MedicamentoGramosInd = texto_gramosMed
-        val MedicamentoComposicionInd = texto_compoMed
-        val MedicamentoUsadoParaInd = texto_usoMed
-        val MedicamentoFechaCaduInd = texto_caducidadMed
-        val MedicamentoNPastillasInd = texto_pastillasMed
+        val url = "http://172.31.105.210:1337/Medicamento"
+        val MedicamentoNombreInd = texto_nombreMed.text
+        val MedicamentoGramosInd = texto_gramosMed.text
+        val MedicamentoComposicionInd = texto_compoMed.text
+        val MedicamentoUsadoParaInd = texto_usoMed.text
+        val MedicamentoFechaCaduInd = texto_caducidadMed.text
+        val MedicamentoNPastillasInd = texto_pastillasMed.text
 
         val parametros = listOf(
                 "nombre" to MedicamentoNombreInd,
@@ -35,7 +35,7 @@ class CrearMedicamenteActivity : AppCompatActivity() {
             "composicion" to MedicamentoComposicionInd,
             "usadoPara" to MedicamentoUsadoParaInd,
             "fechaCaducidad" to MedicamentoFechaCaduInd,
-        "numeroPastillas" to MedicamentoFechaCaduInd,
+        "numeroPastillas" to MedicamentoNPastillasInd,
         "pacienteId" to idPacienteMedicamento
         )
         val paciente = Paciente

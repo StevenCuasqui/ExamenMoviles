@@ -62,7 +62,7 @@ class EPacienteActivity : AppCompatActivity() {
         }
 
 
-        val url = "http://192.168.100.8:1337/Paciente/${iden}"
+        val url = "http://172.31.105.210:1337/Paciente/${iden}"
         var aux = JSONArray()
 
 
