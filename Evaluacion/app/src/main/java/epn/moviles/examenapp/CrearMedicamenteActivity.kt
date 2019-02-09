@@ -13,8 +13,9 @@ class CrearMedicamenteActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_crear_medicamente)
-        idPacienteMedicamento = intent.getIntExtra("idPaciente",0)
-            button_guardarMed.setOnClickListener { crearMedicamento()
+        this.idPacienteMedicamento = intent.getIntExtra("idPaciente",1)
+            button_guardarMed.setOnClickListener {
+                crearMedicamento()
             this.finish()}
         button_cancelarMed.setOnClickListener { this.finish() }
     }

@@ -34,7 +34,7 @@ class ListaMedicamentosActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lista_medicamentos)
-        val identifiPaciente = intent.getIntExtra("idPaciente",0)
+        val identifiPaciente = intent.getIntExtra("id",1)
         identificaPaciente = identifiPaciente
 
         button_CrearMedicamento.setOnClickListener {  iraCrearMedicamento()}
@@ -42,6 +42,11 @@ class ListaMedicamentosActivity : AppCompatActivity() {
         miPacientito =miPaciente
 
         llenarPacienteCampos()
+        cargarDatos()
+    }
+
+    override fun onResume(){
+        super.onResume()
         cargarDatos()
     }
 
@@ -108,7 +113,7 @@ class ListaMedicamentosActivity : AppCompatActivity() {
                 }
 
                 medicamento_recyclerView.layoutManager = LinearLayoutManager(this)
-                medicamento_recyclerView.itemAnimator = DefaultItemAnimator()
+                medicamento_recyclerView.itemAnimator = DefaultItemAnimator() as RecyclerView.ItemAnimator?
 
                 medicamento_recyclerView.adapter = MedicamentoAdapter(listGeneral, this,medicamento_recyclerView)
                 registerForContextMenu(medicamento_recyclerView)
@@ -153,7 +158,7 @@ class ListaMedicamentosActivity : AppCompatActivity() {
 
                 layout
                     .setOnClickListener {
-                        val nombreActual = it.findViewById(R.id.text_paciente_individual) as TextView
+                        val nombreActual = it.findViewById(R.id.text_nombre_medicamento) as TextView
 
                         Log.i("recycler-view",
                             "El nombre actual es: ${nombreActual.text}")
@@ -200,7 +205,7 @@ class ListaMedicamentosActivity : AppCompatActivity() {
 
                 popUp.setOnMenuItemClickListener {
                         item -> when (item.itemId){
-                    R.id.item_menu_editar->{
+                    R.id.medi_menu_editar->{
                         Log.i("Menu","${identificador}")
                         var nombreMed = listadeMedicamentos.nombre.get(position)
                         var gramosaingerir = listadeMedicamentos.gramosAIngerir.get(position)
@@ -236,7 +241,7 @@ class ListaMedicamentosActivity : AppCompatActivity() {
                         //Log.i("contenido","${pacienteEditar}")
                         true
                     }
-                    R.id.item_menu_eliminar->{
+                    R.id.medi_menu_eliminar->{
                         val parametros = listOf("id" to identificador)
                         urlGen
                             .httpDelete(parametros)
@@ -258,7 +263,7 @@ class ListaMedicamentosActivity : AppCompatActivity() {
                             }
                         true
                     }
-                    R.id.item_menu_compartir->{
+                    R.id.medi_menu_compartir->{
 //
                         val correo = listadeMedicamentos.nombre.get(position)+"@epn.edu.ec"
                         val subject = "Correo de ejemplo"

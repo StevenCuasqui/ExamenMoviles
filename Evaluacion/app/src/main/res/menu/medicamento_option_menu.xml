@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <menu xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <item
+            android:id="@+id/medi_menu_editar"
+            android:title="Editar"
+            app:showAsAction="always" />
+
+        <item
+            android:id="@+id/medi_menu_eliminar"
+            android:title="Eliminar"
+            app:showAsAction="always" />
+
+
+
+        <item android:id="@+id/medi_menu_compartir"
+            android:title="Compartir"
+            app:showAsAction="always" />
+
+
+
+    </menu>
+</menu>

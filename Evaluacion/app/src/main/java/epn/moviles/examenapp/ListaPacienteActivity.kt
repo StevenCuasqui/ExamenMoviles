@@ -228,6 +228,7 @@ class ListaPacienteActivity : AppCompatActivity() {
                         val intentEditar = Intent(contexto,
                                 ListaMedicamentosActivity::class.java
                         )
+
                         intentEditar.putExtra("paciente",pacienteEditar)
 //                        intentEditar.putExtra("nombre", nombre)
 //                        intentEditar.putExtra("apellido", apellido)
@@ -235,7 +236,7 @@ class ListaPacienteActivity : AppCompatActivity() {
 //                        intentEditar.putExtra("seguro", seguroTie)
 
                         intentEditar.putExtra("id",identi)
-                        Log.i("contenido","${pacienteEditar}")
+                        Log.i("contenido","${identi}")
                         startActivity(contexto,intentEditar,null)
                         true
                     }
